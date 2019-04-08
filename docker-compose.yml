@@ -1,32 +1,30 @@
 graphite:
-    build: graphite
+    image: graphiteapp/graphite-statsd
     restart: always
     ports:
-        - "8000:8000"
+        - "80:8000"
         - "2003:2003"
         - "2004:2004"
-    volumes:
-        - "/data/graphite:/opt/graphite/storage/whisper"
-
-statsd:
-    build: statsd
-    restart: always
-    ports:
+        - "2023:2023"
+        - "2024:2024"
         - "8125:8125/udp"
         - "8126:8126"
-    volumes:
-        - "/data/statsd:/etc/statsd"
-    links:
-        - graphite
 
 grafana:
     image: grafana/grafana
     restart: always
     ports:
         - "3000:3000"
-    volumes:
-        - "/data/grafana:/var/lib/grafana"
     links:
         - graphite
     environment:
         - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+        - ./grafana/provisioning:/etc/grafana/provisioning
+
+energy-monitor:
+    image: xordiv/docker-alpine-cron
+    links:
+        - graphite
+    environment:
+        - CRON_STRINGS=*/1 * * * * echo -n "example:1925|c" | nc -w 1 -u graphite 8125

@@ -1,21 +1,17 @@
-# Graphite / StatsD / Grafana with Docker
+# Graphite / Grafana with Docker
 
 This project contains 2 docker images
 
 - [Graphite] (https://github.com/Ennexa/docker-graphite/tree/master/graphite)
-- [StatsD] (https://github.com/Ennexa/docker-graphite/tree/master/statsd)
 
 ## Setup
 
-##### Start Graphite
+### Start Graphite
 
     mkdir -p /data/graphite
     docker run -ti -d --name graphite -v /data/graphite:/opt/graphite/storage/whisper -p 8000:8000 ennexa/graphite
 
-##### Start StatsD
-    docker run -ti -d --name statsd -P --link graphite:graphite ennexa/statsd
-
-##### Start Grafana
+### Start Grafana
 
     docker run -ti -d --name grafana -p 3000:3000 --link graphite:graphite grafana/grafana
 
