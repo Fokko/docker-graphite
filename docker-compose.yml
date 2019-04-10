@@ -25,14 +25,14 @@ services:
       volumes:
           - ./grafana/provisioning:/etc/grafana/provisioning
 
-  energy-monitor:
+  energy-monitor-cnt:
       image: fokkodriesprong/docker-alpine-cron
       links:
           - graphite
       environment:
           - CRON_STRINGS=*/1 * * * * curl -s http://192.168.1.61/a?f=j | jq .cnt -r | tr ',' '.' | xargs printf "kwh_total:%s|g" | nc -w 1 -u graphite 8125
 
-  energy-monitor:
+  energy-monitor-pwr:
       image: fokkodriesprong/docker-alpine-cron
       links:
           - graphite
